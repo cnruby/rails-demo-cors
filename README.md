@@ -8,7 +8,7 @@
 
 - [create a new app-back-end-api](#create-a-new-app-back-end-api)
 - [add a new serializer class](#add-a-new-serializer-class)
-- [get the app-back-end-html](#get-the-app-back-end-html)
+- [get the project `app-back-end-html`](#get-the-project-app-back-end-html)
 - [references](#references)
 
 
@@ -73,7 +73,7 @@ end
 ```
 
  
-## get the app-back-end-html
+## get the project `app-back-end-html`
 ```bash
 git clone -b app-back-end-html https://github.com/cnruby/rails-demo-cors.git app-back-end-html && \
 cd app-back-end-html
