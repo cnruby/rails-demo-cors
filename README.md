@@ -7,7 +7,7 @@
 
 - [create a new app-back-end-api](#create-a-new-app-back-end-api)
 - [add two models](#add-two-models)
-- [create a new dtabase and schema](#create-a-new-dtabase-and-schema)
+- [create a new database and schema](#create-a-new-database-and-schema)
 - [add new seed data](#add-new-seed-data)
 - [add two controllers](#add-two-controllers)
 - [run the app api](#run-the-app-api)
@@ -106,7 +106,7 @@ end
 
 
 
-## create a new dtabase and schema
+## create a new database and schema
 ```bash
 ./bin/rails db:migrate
 ```
