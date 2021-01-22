@@ -1,5 +1,6 @@
-<h1>Hello Rails + CORS API</h1>
+<h1>Hello Rails + CORS for HTML</h1>
 - Cross Origin Resource Sharing = CORS
+- allow our api to send back data in json format that we can then use in our html front-end.
 
 ---
 
@@ -9,9 +10,8 @@
 - [add two models](#add-two-models)
 - [create a new dtabase and schema](#create-a-new-dtabase-and-schema)
 - [add new seed data](#add-new-seed-data)
-- [add two controllers](#add-two-controllers)
-- [run the app api](#run-the-app-api)
-- [get the app-back-end-api](#get-the-app-back-end-api)
+- [add a new serializer class](#add-a-new-serializer-class)
+- [get the app-back-end-html](#get-the-app-back-end-html)
 - [references](#references)
 
 
@@ -19,8 +19,10 @@
 
 ## create a new app-back-end-api
 ```bash
-rails new app-back-end-api --api && \
-cd app-back-end-api
+EXISTING_APP_ID=app-back-end-api && NEW_APP_ID=app-back-end-html && \
+git clone -b ${EXISTING_APP_ID} https://github.com/cnruby/rails-demo-cors ${NEW_APP_ID} && \
+cd ${NEW_APP_ID} && \
+git checkout -b ${NEW_APP_ID}
 ```
 
 ```bash
@@ -31,6 +33,7 @@ nano ./Gemfile.rb
 ...
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
+gem 'active_model_serializers'
 ...
 ```
 
@@ -38,23 +41,7 @@ gem 'rack-cors'
 ./bin/bundle
 ```
 
-```bash
-nano ./config/initializers/cors.rb
-```
-```bash
-# FILE (./config/initializers/cors.rb)
-Rails.application.config.middleware.insert_before 0, Rack::Cors, debug: true, logger: (-> { Rails.logger }) do
-    allow do
-      origins '*'
-    #   origins 'localhost'
-  
-      resource '*',
-        :headers => :any,
-        :methods => [:get, :post, :delete, :put, :patch, :options, :head],
-        :max_age => 0
-    end
-end
-```
+
 
 ## add two models
 ```bash
@@ -159,112 +146,34 @@ Board.create(name: "Matt", size: 1, surfer_id: 2)
 
 
 
-## add two controllers
+## add a new serializer class
 ```bash
-rails g controller boards index --skip-template-engine
+./bin/rails g serializer Board
 ```
 ```bash
     # >>> Result
-    Running via Spring preloader in process 58216
-        create  app/controllers/boards_controller.rb
-        route  get 'boards/index'
-        invoke  test_unit
-        create    test/controllers/boards_controller_test.rb
+    Running via Spring preloader in process 62290
+        create  app/serializers/board_serializer.rb
 ```
 ```bash
-nano ./app/controllers/boards_controller.rb
+nano ./app/serializers/board_serializer.rb
 ```
 ```bash
-# FILE (./app/controllers/boards_controller.rb)
-class BoardsController < ApplicationController
-  def index
-    @boards = Board.all
-    render json: @boards
+# FILE (./app/serializers/board_serializer.rb)
+class BoardSerializer < ActiveModel::Serializer
+  attributes :id, :name, :size, :surfer_id
+​
+  def surfer_id
+    self.object.surfer.name
   end
 end
 ```
 
+ 
+## get the app-back-end-html
 ```bash
-rails g controller surfer index --skip-template-engine
-```
-```bash
-    # >>> Result
-    Running via Spring preloader in process 58306
-        create  app/controllers/surfer_controller.rb
-        route  get 'surfer/index'
-        invoke  test_unit
-        create    test/controllers/surfer_controller_test.rb
-```
-```bash
-nano ./app/controllers/surfers_controller.rb
-```
-```bash
-# FILE (./app/controllers/surfers_controller.rb)
-class SurfersController < ApplicationController
-  def index
-    @surfers = Surfer.all
-    render json: @surfers
-  end
-end
-```
-
-
-
-## run the app api
-```bash
-./bin/rails server
-```
-```bash
-curl --no-progress-meter http://127.0.0.1:3000/boards/index | json_pp
-```
-```bash
-    # >>> Result
-    [
-        {
-            "created_at" : "2021-01-22T21:41:01.805Z",
-            "id" : 1,
-            "name" : "Matt",
-            "size" : "large",
-            "surfer_id" : 1,
-            "updated_at" : "2021-01-22T21:41:01.805Z"
-        },
-        {
-            "created_at" : "2021-01-22T21:41:01.910Z",
-            "id" : 2,
-            "name" : "Matt",
-            "size" : "medium",
-            "surfer_id" : 2,
-            "updated_at" : "2021-01-22T21:41:01.910Z"
-        }
-    ]
-```
-```bash
-curl --no-progress-meter http://127.0.0.1:3000/surfers/index | json_pp
-```
-```bash
-    # >>> Result
-    [
-        {
-            "created_at" : "2021-01-22T21:41:01.566Z",
-            "id" : 1,
-            "name" : "Matt",
-            "updated_at" : "2021-01-22T21:41:01.566Z"
-        },
-        {
-            "created_at" : "2021-01-22T21:41:01.669Z",
-            "id" : 2,
-            "name" : "Eric",
-            "updated_at" : "2021-01-22T21:41:01.669Z"
-        }
-    ]
-```
-
-
-
-## get the app-back-end-api
-```bash
-git clone -b app-back-end-api https://github.com/cnruby/rails-demo-cors.git app-back-end-api && \
-cd app-back-end-api
+git clone -b app-back-end-html https://github.com/cnruby/rails-demo-cors.git app-back-end-html && \
+cd app-back-end-html
 ```
 
 
