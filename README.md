@@ -1,4 +1,4 @@
-<h1>Hello Rails + CORS API</h1>
+<h1>Hello Rails + CORS for API</h1>
 - Cross Origin Resource Sharing = CORS
 
 ---
